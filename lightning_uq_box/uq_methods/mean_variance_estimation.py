@@ -17,6 +17,7 @@ from .utils import (
     default_regression_metrics,
     freeze_model_backbone,
     save_regression_predictions,
+    _get_num_outputs
 )
 
 
@@ -50,11 +51,20 @@ class MVEBase(DeterministicModel):
 
         self.loss_fn = NLL()
 
+    @property
+    def num_outputs(self) -> int:
+        """Return number of variables predicted.
+        
+        In MVE this is the model output / 2
+        """
+        return _get_num_outputs(self.model) // 2
+        
+
     def setup_task(self) -> None:
         """Set up task specific attributes."""
-        self.train_metrics = default_regression_metrics("train")
-        self.val_metrics = default_regression_metrics("val")
-        self.test_metrics = default_regression_metrics("test")
+        self.train_metrics = default_regression_metrics("train", num_outputs=self.num_outputs)
+        self.val_metrics = default_regression_metrics("val", num_outputs=self.num_outputs)
+        self.test_metrics = default_regression_metrics("test", num_outputs=self.num_outputs)
         self.freeze_model()
 
     def freeze_model(self) -> None:
@@ -129,7 +139,7 @@ class MVERegression(MVEBase):
 
     def adapt_output_for_metrics(self, out: Tensor) -> Tensor:
         """Adapt model output to be compatible for metric computation."""
-        assert out.shape[-1] <= 2 or len(out) <=2, "Gaussian output."
+        assert out.shape[1] <= 2, "Gaussian output."
         return out[:, 0:1].squeeze(1)
 
     def predict_step(

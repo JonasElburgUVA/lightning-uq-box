@@ -80,13 +80,13 @@ def compute_coverage_and_set_size(
     return float(covered) / targets.shape[0], size / targets.shape[0]
 
 
-def default_regression_metrics(prefix: str):
+def default_regression_metrics(prefix: str, num_outputs=1):
     """Return a set of default regression metrics."""
     return MetricCollection(
         {
-            "RMSE": MeanSquaredError(squared=False),
+            "RMSE": MeanSquaredError(squared=False, num_outputs=num_outputs),
             "MAE": MeanAbsoluteError(),
-            "R2": R2Score(),
+            "R2": R2Score(num_outputs=num_outputs),
         },
         prefix=prefix,
     )
