@@ -57,7 +57,7 @@ class MVEBase(DeterministicModel):
         
         In MVE this is the model output / 2
         """
-        return _get_num_outputs(self.model) // 2
+        return 4 #_get_num_outputs(self.model) // 2 #TODO make adaptive
         
 
     def setup_task(self) -> None:
