@@ -129,8 +129,8 @@ class MVERegression(MVEBase):
 
     def adapt_output_for_metrics(self, out: Tensor) -> Tensor:
         """Adapt model output to be compatible for metric computation."""
-        assert out.shape[-1] <= 2, "Gaussian output."
-        return out[:, 0:1]
+        assert out.shape[-1] <= 2 or len(out) <=2, "Gaussian output."
+        return out[:, 0:1].squeeze(1)
 
     def predict_step(
         self, X: Tensor, batch_idx: int = 0, dataloader_idx: int = 0

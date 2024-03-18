@@ -19,6 +19,7 @@ class MLP(nn.Module):
         n_hidden: list[int] = [100],
         n_outputs: int = 1,
         activation_fn: Optional[nn.Module] = None,
+        predict_sigma: bool = False,
     ) -> None:
         """Initialize a new instance of MLP.
 
@@ -44,7 +45,11 @@ class MLP(nn.Module):
                 nn.Dropout(dropout_p),  # if idx != 1 else nn.Identity(),
             ]
         # add output layer
+        if predict_sigma:
+            # if predicting sigma, then output layer should be 2 * n_outputs
+            n_outputs *= 2
         layers += [nn.Linear(layer_sizes[-1], n_outputs)]
+        self.predict_sigma = predict_sigma
         self.model = nn.Sequential(*layers)
         self.n_outputs = n_outputs
 
@@ -57,4 +62,8 @@ class MLP(nn.Module):
         Returs:
           output from neural net of dimension [batch_size, n_outputs]
         """
-        return self.model(x)
+        out = self.model(x)
+        if self.predict_sigma:
+            # split the output into mean and sigma
+            out = out.reshape(-1,2,self.n_outputs//2)#out.split(self.n_outputs // 2, dim=-1) #TODO check if this is correct
+        return out

@@ -197,6 +197,7 @@ def plot_predictions_regression(
     ax0.scatter(X_test, y_pred, color="orange", label="predictions", alpha=0.5)
 
     if pred_std is not None:
+        pred_std = pred_std.squeeze()
         ax0.fill_between(
             X_test.squeeze(),
             y_pred - pred_std,

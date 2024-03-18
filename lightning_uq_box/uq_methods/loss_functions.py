@@ -150,7 +150,7 @@ class NLL(nn.Module):
         Returns:
           computed loss for the entire batch
         """
-        mu, log_sigma_2 = preds[:, 0].unsqueeze(-1), preds[:, 1].unsqueeze(-1)
+        mu, log_sigma_2 = preds[:,0], preds[:,1]#preds[:, 0].unsqueeze(-1), preds[:, 1].unsqueeze(-1)
         loss = 0.5 * log_sigma_2 + (
             0.5 * torch.exp(-log_sigma_2) * torch.pow((target - mu), 2)
         )
