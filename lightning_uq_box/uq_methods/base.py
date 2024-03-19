@@ -176,7 +176,7 @@ class DeterministicModel(BaseModule):
             validation loss
         """
         out = self.forward(batch[self.input_key])
-        loss = self.loss_fn(out, batch[self.target_key])
+        loss = self.loss_fn(out, batch[self.target_key]).mean()
 
         self.log(
             "val_loss", loss, batch_size=batch[self.input_key].shape[0]
