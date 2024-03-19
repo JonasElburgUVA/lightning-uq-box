@@ -96,6 +96,8 @@ class MVEBase(DeterministicModel):
         else:
             loss = self.loss_fn(out, batch[self.target_key])
 
+        
+
         self.log(
             "train_loss", loss, batch_size=batch[self.input_key].shape[0]
         )  # logging to Logger
