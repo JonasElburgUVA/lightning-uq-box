@@ -234,7 +234,7 @@ def save_regression_predictions(outputs: dict[str, Tensor], path: str) -> None:
     cpu_outputs = {}
     for key, val in outputs.items():
         if isinstance(val, Tensor):
-            cpu_outputs[key] = val.squeeze(-1).cpu().numpy()
+            cpu_outputs[key] = val.squeeze(-1).cpu().numpy().tolist()
         else:
             cpu_outputs[key] = np.array(val)
 
