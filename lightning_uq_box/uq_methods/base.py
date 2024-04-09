@@ -95,7 +95,7 @@ class DeterministicModel(BaseModule):
 
         Args:
             model: pytorch model
-            loss_fn: loss function used for optimization
+            loss_fn: loss function used r optimization
             optimizer: optimizer used for training
             lr_scheduler: learning rate scheduler
         """
@@ -158,7 +158,7 @@ class DeterministicModel(BaseModule):
 
         return loss
     
-    def _reduce_val_dict(self, dct):
+    def _prepare_metrics_dict(self, dct):
         for key, val in dct.items():
             if len(val.squeeze().shape) > 0:
                 dct[key] = val.mean()
@@ -166,7 +166,7 @@ class DeterministicModel(BaseModule):
 
     def on_train_epoch_end(self):
         """Log epoch-level training metrics."""
-        self.log_dict(self._reduce_val_dict(self.train_metrics.compute()))
+        self.log_dict(self._prepare_metrics_dict(self.train_metrics.compute()))
         self.train_metrics.reset()
 
     def validation_step(
@@ -195,7 +195,7 @@ class DeterministicModel(BaseModule):
     def on_validation_epoch_end(self) -> None:
         """Log epoch level validation metrics."""
 
-        self.log_dict(self._reduce_val_dict(self.val_metrics.compute()))
+        self.log_dict(self._prepare_metrics_dict(self.val_metrics.compute()))
         self.val_metrics.reset()
 
     def test_step(
@@ -222,7 +222,7 @@ class DeterministicModel(BaseModule):
 
     def on_test_epoch_end(self):
         """Log epoch-level test metrics."""
-        self.log_dict(self._reduce_val_dict(self.test_metrics.compute()))
+        self.log_dict(self._prepare_metrics_dict(self.test_metrics.compute()))
         self.test_metrics.reset()
 
     def predict_step(
